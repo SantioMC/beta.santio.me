@@ -36,4 +36,4 @@ router
 		res.send({ error: false, message: 'Your account has been deleted! You are now signed out.' });
 	});
 
-router.module.exports = router;
+module.exports = router;
