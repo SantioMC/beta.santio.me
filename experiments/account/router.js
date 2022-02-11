@@ -32,8 +32,8 @@ router
 	})
 	.delete(requiresAuth, async (req, res) => {
 		if (!req.hasPermission('account', 'delete')) return res.status(401).send({ error: true, message: 'You are not permitted to delete this resource!' });
-		await req.account.delete();
+		if (!req.account.flags.includes('demo')) await req.account.delete();
 		res.send({ error: false, message: 'Your account has been deleted! You are now signed out.' });
 	});
 
-module.exports = router;
+router.module.exports = router;
