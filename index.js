@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 const helmet = require('helmet');
 const { resolve } = require('path');
 const { getTokenData, getAccount, getToken } = require('./database/database');
+const ratelimit = require('express-rate-limit');
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -14,6 +15,15 @@ app.use(cookieParser());
 app.use(helmet({ contentSecurityPolicy: false }));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json({ type: ['application/json', 'text/plain'] }));
+app.use(
+	ratelimit({
+		windowMs: 60000,
+		max: 300,
+		handler: (_req, res) => {
+			return res.status(429).json({ error: true, message: 'You have reached the rate limit!' });
+		}
+	})
+);
 
 // Create account middleware
 app.all('*', async (req, _res, next) => {
