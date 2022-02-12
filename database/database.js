@@ -36,7 +36,7 @@ module.exports.getToken = async (token) => {
 };
 
 module.exports.requiresAuth = async (req, res, next) => {
-	if (module.exports.getAccount(req)) return res.status(401).send({ error: true, message: 'You are not authenticated!' });
+	if (module.exports.getAccount(req) == null) return res.status(401).send({ error: true, message: 'You are not authenticated!' });
 	next();
 };
 
