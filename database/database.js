@@ -42,6 +42,6 @@ module.exports.requiresAuth = async (req, res, next) => {
 
 module.exports.requiresAdmin = async (req, res, next) => {
 	if (req.account == null) return res.status(401).send({ error: true, message: 'You are not authenticated!' });
-	if (!account.roles.includes('admin')) return res.status(401).send({ error: true, message: 'You are not permitted to view this resource!' });
+	if (!account.roles.includes('admin')) return res.status(403).send({ error: true, message: 'You are not permitted to view this resource!' });
 	next();
 };
