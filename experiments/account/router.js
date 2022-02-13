@@ -2,16 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const { requiresAuth } = require('../../database/database');
 const router = express.Router();
-const ratelimit = require('express-rate-limit');
-
-// Rate Limit
-const harshLimit = ratelimit({
-	windowMs: 60000,
-	max: 2,
-	handler: (_req, res) => {
-		return res.status(429).json({ error: true, message: 'You have reached the rate limit!' });
-	}
-});
+const ratelimit = require('../../generic/ratelimit');
 
 // Routes
 router
@@ -41,7 +32,7 @@ router
 		// Send result
 		res.json(req.account);
 	})
-	.delete(requiresAuth, harshLimit, async (req, res) => {
+	.delete(requiresAuth, ratelimit(3), async (req, res) => {
 		if (!req.hasPermission('account', 'delete')) return res.status(401).send({ error: true, message: 'You are not permitted to delete this resource!' });
 		if (!req.account.flags.includes('demo')) await req.account.delete();
 		res.send({ error: false, message: 'Your account has been deleted! You are now signed out.' });

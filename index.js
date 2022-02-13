@@ -5,7 +5,8 @@ const bodyParser = require('body-parser');
 const helmet = require('helmet');
 const { resolve } = require('path');
 const { getTokenData, getAccount, getToken } = require('./database/database');
-const ratelimit = require('express-rate-limit');
+// const ratelimit = require('express-rate-limit');
+const ratelimit = require('./generic/ratelimit');
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -15,15 +16,7 @@ app.use(cookieParser());
 app.use(helmet({ contentSecurityPolicy: false }));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json({ type: ['application/json', 'text/plain'] }));
-app.use(
-	ratelimit({
-		windowMs: 60000,
-		max: 300,
-		handler: (_req, res) => {
-			return res.status(429).json({ error: true, message: 'You have reached the rate limit!' });
-		}
-	})
-);
+app.use(ratelimit(300));
 
 // Create account middleware
 app.all('*', async (req, _res, next) => {
@@ -48,7 +41,7 @@ app.use('/account', require('./experiments/account/router'));
 // Register 404
 app.get('/*', (req, res) => {
 	// res.sendFile(resolve("generic/404.html"))
-	res.send({
+	res.status(404).send({
 		error: true,
 		message: 'Invalid experiment! Did you mean to go to the home page?',
 		home_page: 'https://santio.me'
