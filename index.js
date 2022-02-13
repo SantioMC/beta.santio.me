@@ -5,7 +5,6 @@ const bodyParser = require('body-parser');
 const helmet = require('helmet');
 const { resolve } = require('path');
 const { getTokenData, getAccount, getToken } = require('./database/database');
-// const ratelimit = require('express-rate-limit');
 const ratelimit = require('./generic/ratelimit');
 
 const app = express();
@@ -40,7 +39,6 @@ app.use('/account', require('./experiments/account/router'));
 
 // Register 404
 app.get('/*', (req, res) => {
-	// res.sendFile(resolve("generic/404.html"))
 	res.status(404).send({
 		error: true,
 		message: 'Invalid experiment! Did you mean to go to the home page?',
