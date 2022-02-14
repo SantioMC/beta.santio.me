@@ -26,8 +26,12 @@ router.get('/verify', ratelimit(4), async (req, res) => {
 router
 	.route('/')
 	.get(requiresAuth, (req, res) => {
-		var data = req.account;
-		if (data == null) return res.status(500).json({ error: true, message: 'An unexpected error has occurred!' });
+		// Fetch data
+		var data = req.account.toObject();
+
+		// Remove useless information
+		data['__v'] = undefined;
+		data['_id'] = undefined;
 
 		// Protect personal information
 		data['password'] = undefined;
@@ -50,7 +54,7 @@ router
 		data.message = '';
 
 		// Send result
-		res.json(req.account);
+		res.json(data);
 	})
 	.delete(requiresAuth, ratelimit(1), async (req, res) => {
 		if (!req.hasPermission('account', 'delete')) return res.status(401).send({ error: true, message: 'You are not permitted to delete this resource!' });
