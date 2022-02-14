@@ -1,10 +1,14 @@
-module.exports = (limit) => {
+const ms = require('ms');
+
+module.exports = (limit, time) => {
 	var hits = {};
+	if (time == undefined) time = 60000;
+	else time = ms(time);
 
 	// Clear limits
 	setInterval(() => {
 		hits = {};
-	}, 60000);
+	}, time);
 
 	return function ratelimit(req, res, next) {
 		var ip = req.ip;
