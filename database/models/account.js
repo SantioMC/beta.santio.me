@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const crypto = require('crypto');
 const Metric = require('./metrics/metric');
 
 module.exports = new mongoose.Schema({
@@ -9,11 +10,12 @@ module.exports = new mongoose.Schema({
 	// Account Information
 	email: String,
 	password: String,
+	salt: String,
 	age: Number,
 
 	// Dates
-	created: { type: String, default: Date.now },
-	updated: { type: String, default: -1 },
+	created: { type: Number, default: Date.now },
+	updated: { type: Number, default: -1 },
 
 	// Settings
 	roles: [String],
@@ -25,3 +27,15 @@ module.exports = new mongoose.Schema({
 	// Experiments
 	metrics: [Metric]
 });
+
+module.exports.pre('save', function (next) {
+	if (this.updated != -1) return next();
+	this.salt = crypto.randomBytes(32).toString('hex');
+	this.password = crypto.pbkdf2Sync(this.password, this.salt, 1000, 64, 'sha512').toString('hex');
+	this.updated = Date.now();
+	next();
+});
+
+module.exports.methods.validatePassword = (password) => {
+	return this.password === crypto.pbkdf2Sync(password, this.salt, 1000, 64, 'sha512').toString('hex');
+};

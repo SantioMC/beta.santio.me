@@ -6,6 +6,8 @@ const helmet = require('helmet');
 const { resolve } = require('path');
 const { getTokenData, getAccount, getToken } = require('./database/database');
 const ratelimit = require('./generic/ratelimit');
+const mail = require('@sendgrid/mail');
+mail.setApiKey(process.env.SENDGRID_KEY);
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -23,6 +25,7 @@ app.all('*', async (req, _res, next) => {
 	req.tokenData = await getToken(req.token);
 	req.account = await getAccount(req);
 	req.hasPermission = (...args) => {
+		if (req.tokenData == null) return false;
 		for (i in args) {
 			if (i == 0) continue;
 			var permission = args.slice(0, i).join(':');
