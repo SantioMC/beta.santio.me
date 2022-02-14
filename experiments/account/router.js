@@ -31,6 +31,7 @@ router
 
 		// Protect personal information
 		data['password'] = undefined;
+		data['salt'] = undefined;
 		if (!req.hasPermission('account', 'email')) data['email'] = undefined;
 		if (!req.hasPermission('account', 'age')) data['age'] = undefined;
 
