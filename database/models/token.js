@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 module.exports = new mongoose.Schema({
 	// Dates
-	created: { type: Date, default: Date.now },
+	created: { type: Number, default: Date.now },
 	expires: { type: Number, default: 86400000 },
 
 	// Token Specifics

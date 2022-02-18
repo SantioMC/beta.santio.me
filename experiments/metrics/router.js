@@ -8,7 +8,7 @@ router.get('/', (req, res) => {
 });
 
 // API
-router.get('/api/test', requiresAuth, (req, res) => {
+router.get('/api/test', requiresAuth(), (req, res) => {
 	res.json({ error: false, message: 'Hey' });
 });
 

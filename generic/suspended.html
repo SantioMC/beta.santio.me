@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Account Suspended</title>
+	<link rel="stylesheet" href="/assets/style.css">
+</head>
+<body>
+	<div class="centered">
+		<div class="container">
+			<div class="title">santio.me</div>
+			<div class="short-description">
+				Your account has been suspended! If you believe this to be an error, send an email to admin@santio.me
+				<div class="reason error"></div>
+			</div>
+			<button class="outline error" onclick="logout()">Sign Out</button>
+		</div>
+	</div>
+</body>
+</html>
+
+<script>
+	(async() => {
+
+		const req = await fetch('/api/account');
+		const data = await req.json();
+		if (data.error) return
+		document.getElementsByClassName("reason")[0].innerText = "\nReason for suspension: " + data.suspended
+
+	})();
+
+	function logout() {
+		window.location = "/account/logout"
+	}
+</script>

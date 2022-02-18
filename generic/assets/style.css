@@ -1,0 +1,201 @@
+@import url('https://fonts.googleapis.com/css2?family=Telex&display=swap');
+
+/* Main */
+
+* {
+	--main-color: #0b79d7;
+	--light-color: hsl(160, 10%, 94%);
+	--dark-color: #191e22;
+
+	--success: #28804b;
+	--notice: #2f5886;
+	--warning: #977e16;
+	--error: #7a1a18;
+}
+
+body {
+	display: block;
+	margin: 0;
+	height: 100vh;
+	width: 100vw;
+	font-family: 'Noto Sans', sans-serif;
+	font-family: 'Source Sans Pro', sans-serif;
+	box-sizing: border-box;
+
+	background: linear-gradient(169deg, #191e22 75%, rgb(11 121 215 / 8%) 80%, rgb(11 121 215 / 32%) 95%, #0b79d773 100%), var(--dark-color);
+	color: var(--light-color);
+}
+
+a {
+	color: var(--main-color);
+}
+
+.error:not(button) {
+	color: var(--error);
+}
+
+/* Generic Pages */
+
+.centered {
+	display: grid;
+	place-items: center;
+	height: 100vh;
+	text-align: center;
+}
+
+.container.clean,
+.dashboard.clean {
+	background: var(--dark-color);
+}
+
+.title {
+	font-family: 'Telex', sans-serif;
+	font-size: 3em;
+	color: var(--main-color);
+	margin-bottom: 3rem;
+}
+
+.title.small {
+	font-size: 1.75em;
+}
+
+.container > .middle,
+.dashboard > middle {
+	text-align: center;
+}
+
+.container > .short-description,
+.dashboard > .short-description {
+	width: 20rem;
+}
+
+.dashboard {
+	display: grid;
+	grid-template-rows: 1fr;
+	grid-template-columns: 1fr 10fr;
+	height: 100%;
+}
+
+/* Labels */
+
+input {
+	border: none;
+	border-bottom: 1px solid var(--light-color);
+	color: var(--light-color);
+	appearance: none;
+	background: hsla(0, 0, 0, 0);
+	padding: 12px;
+	width: 250px;
+	font-size: 14px;
+	outline: none;
+	margin: 0.8rem 0rem;
+	transition: filter 0.2s;
+	filter: brightness(0.7);
+}
+
+input:focus {
+	border-bottom: 1px solid var(--light-color);
+	transition: filter 0.2s;
+	filter: brightness(1);
+}
+
+input:-webkit-autofill {
+	border-bottom: 1px solid var(--notice);
+	transition: background-color 1s 5000s, color 1s 5000s !important;
+	filter: brightness(1);
+	color: var(--light-color);
+}
+
+input:not(:placeholder-shown):not(:focus):invalid {
+	border-bottom: 1px solid var(--error);
+	transition: filter 0.2s;
+	filter: brightness(1);
+}
+
+input:not(:placeholder-shown):not(:focus):valid {
+	border-bottom: 1px solid var(--success);
+	transition: filter 0.2s;
+	filter: brightness(1);
+}
+
+label {
+	position: relative;
+}
+
+input:-webkit-autofill ~ span,
+input:focus ~ span,
+input:not(:placeholder-shown) ~ span,
+input:not(:focus):valid ~ span {
+	top: -20px;
+	left: 10px;
+	font-size: 12px;
+	opacity: 1;
+	filter: brightness(1);
+}
+
+input ~ span {
+	position: absolute;
+	pointer-events: none;
+	left: 10px;
+	top: 0px;
+	transition: 0.2s ease all;
+	background-color: var(--dark-color);
+	filter: brightness(0.7);
+}
+
+/* Buttons */
+
+button {
+	transition: filter 0.2s, background-color 0.1s;
+	border: 1px solid var(--main-color);
+	border-radius: 0.4px;
+	padding: 0.8em 2em;
+	background-color: var(--main-color);
+	color: var(--light-color);
+	margin: 2rem 0.4rem;
+}
+button.outline {
+	border: 1px solid var(--main-color);
+	background-color: hsla(0, 0, 0, 0);
+}
+button.outline:hover {
+	background-color: var(--main-color);
+	transition: background-color 0.1s;
+}
+
+button.success,
+button.success.outline:hover {
+	background-color: var(--success);
+	border: 1px solid var(--success);
+	transition: background-color 0.1s;
+}
+button.success.outline {
+	background-color: hsla(0, 0, 0, 0);
+	border: 1px solid var(--success);
+}
+
+button.error,
+button.error.outline:hover {
+	background-color: var(--error);
+	border: 1px solid var(--error);
+	transition: background-color 0.1s;
+}
+button.error.outline {
+	background-color: hsla(0, 0, 0, 0);
+	border: 1px solid var(--error);
+}
+
+button.submit {
+	padding: 0.8em 4em;
+}
+
+button:not(.outline):hover {
+	transition: filter 0.2s;
+	filter: grayscale(40%);
+}
+
+button:disabled {
+	transition: filter 0.2s;
+	filter: grayscale(100%);
+	cursor: not-allowed;
+}

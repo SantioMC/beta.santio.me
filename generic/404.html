@@ -1,1 +1,28 @@
-Hey, you seem lost! You can <a href="https://santio.me">click here</a> to head back to the main page!
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>santio.me | 404</title>
+	<link rel="stylesheet" href="/assets/style.css">
+</head>
+<body>
+	<div class="centered">
+		<div class="container">
+			<div class="title">santio.me</div>
+			<div class="short-description">
+				This page doesn't exist! Try using one of the following buttons to find your way back.
+			</div>
+			<button onclick="history.home()">Home Page</button>
+			<button class="outline" onclick="history.back()">Go Back</button>
+		</div>
+	</div>
+</body>
+</html>
+
+<script>
+	history.home = () => {
+		window.location = "https://santio.me/"
+	}
+</script>

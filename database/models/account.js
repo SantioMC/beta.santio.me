@@ -20,7 +20,7 @@ module.exports = new mongoose.Schema({
 	// Settings
 	roles: [String],
 	flags: [String],
-	suspended: { type: Boolean, default: false },
+	suspended: { type: String, default: '' },
 	verified: { type: Boolean, default: false },
 	verifyCode: String,
 
@@ -36,6 +36,7 @@ module.exports.pre('save', function (next) {
 	next();
 });
 
-module.exports.methods.validatePassword = (password) => {
-	return this.password === crypto.pbkdf2Sync(password, this.salt, 1000, 64, 'sha512').toString('hex');
+module.exports.methods.validatePassword = async function (password) {
+	if (!password || !this.salt || !this.password) return false;
+	return this.password == crypto.pbkdf2Sync(password, this.salt, 1000, 64, 'sha512').toString('hex');
 };

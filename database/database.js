@@ -1,3 +1,4 @@
+const { redirect } = require('express/lib/response');
 const mongoose = require('mongoose');
 
 var database = null;
@@ -14,6 +15,7 @@ var database = null;
 
 module.exports.getTokenData = (req) => {
 	var header = req.headers.authorization || '';
+	if (header == '' && req.signedCookies['token'] != undefined) header = `Bearer ${req.signedCookies['token']}`;
 	var data = header.split(' ');
 	if (data.length != 2) return { type: '', code: '' };
 	return {
@@ -35,13 +37,63 @@ module.exports.getToken = async (token) => {
 	return reqToken;
 };
 
-module.exports.requiresAuth = async (req, res, next) => {
-	if (req.tokenData == null || module.exports.getAccount(req) == null) return res.status(401).send({ error: true, message: 'You are not authenticated!' });
-	next();
+module.exports.requiresAuth = (redirect) => {
+	return async (req, res, next) => {
+		const acc = await module.exports.getAccount(req);
+		console.log(acc);
+		if (req.tokenData == null || acc == null) {
+			if (redirect != null) return res.redirect(redirect);
+			else return res.status(401).send({ error: true, message: 'You are not authenticated!' });
+		}
+		console.log(acc.suspended != '');
+		if (acc.suspended != '' && req.baseUrl != '/account/logout' && !req.baseUrl.startsWith('/api/')) return res.redirect('/suspended');
+		next();
+	};
 };
 
 module.exports.requiresAdmin = async (req, res, next) => {
 	if (req.account == null) return res.status(401).send({ error: true, message: 'You are not authenticated!' });
 	if (!account.roles.includes('admin')) return res.status(403).send({ error: true, message: 'You are not permitted to view this resource!' });
+	next();
+};
+
+module.exports.waitForDatabase = async (req, res, next) => {
+	if (database == null)
+		return res.status(500).send({
+			error: true,
+			message: 'Failed to establish a connection with the database! Try again later.'
+		});
+	next();
+};
+
+module.exports.embedData = async (req, res, next) => {
+	if (database == null) return next();
+	req.token = module.exports.getTokenData(req);
+	req.tokenData = await module.exports.getToken(req.token);
+	req.account = await module.exports.getAccount(req);
+	req.hasPermission = (...args) => {
+		if (req.tokenData == null) return false;
+		for (i in args) {
+			if (i == 0) continue;
+			var permission = args.slice(0, i).join(':');
+			if (req.tokenData.permissions.includes(permission + ':*')) return true;
+		}
+		return req.tokenData.permissions.includes(permission) || req.tokenData.permissions.includes('*');
+	};
+
+	// Cookie Middleware
+	req.setCookie = (key, value) => {
+		res.cookie(key, value, {
+			maxAge: 2592000000,
+			secure: process.env.STATE == 'PRODUCTION',
+			signed: true,
+			httpOnly: true
+		});
+	};
+
+	req.readCookie = (key) => {
+		return req.signedCookies[key];
+	};
+
 	next();
 };
