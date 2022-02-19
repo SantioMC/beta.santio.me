@@ -12,9 +12,14 @@ router
 	.route('/')
 
 	// Fetch User
-	.get(requiresAuth('/account/login'), (req, res) => {
+	.get(requiresAuth('/account/login'), async (req, res) => {
+		const Token = mongoose.model('token');
+
 		// Fetch data
 		var data = req.account.toObject();
+
+		// Fetch token data
+		var tokens = await Token.find({ account: data.tag });
 
 		// Remove useless information
 		data['__v'] = undefined;
@@ -25,6 +30,7 @@ router
 		data['salt'] = undefined;
 		if (!req.hasPermission('account', 'email')) data['email'] = undefined;
 		if (!req.hasPermission('account', 'age')) data['age'] = undefined;
+		if (req.hasPermission('account', 'sessions')) data['sessionCount'] = tokens.length;
 
 		if (!req.hasPermission('account', 'info')) {
 			data['roles'] = undefined;
@@ -66,7 +72,8 @@ router
 		if (parseInt(age) < 13) return res.status(400).send({ error: true, message: 'You must be 13 or older to register an account!' });
 
 		if (/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/i.test(email)) return res.status(400).send({ error: true, message: 'Please enter a valid email address!' });
-		if (/^[A-Z0-9]{3,8}$/i.test(tag)) return res.status(400).send({ error: true, message: 'Tags must be between 3 and 8 characters!' });
+		if (/^[a-z0-9]{3,8}$/.test(tag)) return res.status(400).send({ error: true, message: 'Tags must be between 3 and 8 characters and should contain no capitals!' });
+		if (/^[A-Z0-9]{3,16}$/i.test(tag)) return res.status(400).send({ error: true, message: 'Your username must be between 3 and 16 characters!' });
 
 		var exists = await Account.findOne({ tag });
 		if (exists) return res.status(400).send({ error: true, message: 'An account already has the provided tag!' });
@@ -121,6 +128,9 @@ router.post('/login', provided('email', 'password'), ratelimit(10), async (req, 
 	const passwordValid = await user.validatePassword(password);
 	if (!passwordValid) return res.status(404).send({ error: true, message: 'Invalid email or password!' });
 
+	if (!user.verified) return res.status(400).send({ error: true, message: 'Please verify your email before logging in!' });
+	if (user.flags.includes('demo')) return res.status(400).send({ error: true, message: 'You may not log in to demo accounts!' });
+
 	// Create a token
 	const token = new Token({
 		code: crypto.randomBytes(32).toString('hex'),
@@ -132,6 +142,16 @@ router.post('/login', provided('email', 'password'), ratelimit(10), async (req, 
 	req.setCookie('token', token.code);
 
 	res.send({ error: false, message: 'Login successful', token: token.code });
+});
+
+// Delete all sessions
+router.delete('/sessions', requiresAuth(), ratelimit(1), async (req, res) => {
+	if (!req.hasPermission('account', 'sessions')) return res.status(401).send({ error: true, message: 'You are not permitted to delete this resource!' });
+
+	const Token = mongoose.model('token');
+	if (!req.account.flags.includes('demo')) await Token.deleteMany({ account: req.account.tag });
+
+	res.send({ error: false, message: 'All sessions belonging to this account have been deleted. Please log in again.' });
 });
 
 module.exports = router;

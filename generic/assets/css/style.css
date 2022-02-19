@@ -1,11 +1,17 @@
 @import url('https://fonts.googleapis.com/css2?family=Telex&display=swap');
+@import url('/assets/css/cssgg.css');
 
 /* Main */
 
 * {
 	--main-color: #0b79d7;
 	--light-color: hsl(160, 10%, 94%);
+
 	--dark-color: #191e22;
+	--dark-color-1: #1e2327;
+	--dark-color-2: #23282c;
+	--dark-color-3: #282d31;
+	--dark-color-4: #2d3236;
 
 	--success: #28804b;
 	--notice: #2f5886;
@@ -21,9 +27,8 @@ body {
 	font-family: 'Noto Sans', sans-serif;
 	font-family: 'Source Sans Pro', sans-serif;
 	box-sizing: border-box;
-
-	background: linear-gradient(169deg, #191e22 75%, rgb(11 121 215 / 8%) 80%, rgb(11 121 215 / 32%) 95%, #0b79d773 100%), var(--dark-color);
 	color: var(--light-color);
+	background: var(--dark-color);
 }
 
 a {
@@ -39,13 +44,12 @@ a {
 .centered {
 	display: grid;
 	place-items: center;
-	height: 100vh;
+	height: 100%;
 	text-align: center;
 }
 
-.container.clean,
-.dashboard.clean {
-	background: var(--dark-color);
+.colored {
+	background: linear-gradient(169deg, #191e22 75%, rgb(11 121 215 / 8%) 80%, rgb(11 121 215 / 32%) 95%, #0b79d773 100%), var(--dark-color);
 }
 
 .title {
@@ -57,6 +61,7 @@ a {
 
 .title.small {
 	font-size: 1.75em;
+	margin: 1.75rem 0rem;
 }
 
 .container > .middle,
@@ -72,7 +77,110 @@ a {
 .dashboard {
 	display: grid;
 	grid-template-rows: 1fr;
-	grid-template-columns: 1fr 10fr;
+	grid-template-columns: 1fr 6fr;
+	height: 100%;
+}
+
+.dashboard > .sidebar {
+	text-align: center;
+	min-width: 10rem;
+	background-color: var(--dark-color-1);
+}
+
+.dashboard > .menu {
+	min-width: 10rem;
+	margin: 2rem;
+}
+
+.dashboard > .sidebar > .segment {
+	background-color: var(--dark-color-2);
+	transition: background-color 0.2s;
+	padding: 1rem 0rem;
+	margin: 0.1rem 0rem;
+
+	display: grid;
+	grid-template-columns: 2fr 6fr 20%;
+	grid-template-rows: 1fr;
+	align-items: center;
+	justify-items: center;
+}
+
+.dashboard > .sidebar > .profile {
+	background-color: var(--dark-color-3);
+	padding: 1rem 1rem;
+	margin: 0.1rem 0rem;
+
+	display: grid;
+	grid-template-columns: 1fr 3fr;
+	column-gap: 1em;
+	row-gap: 2em;
+	align-items: center;
+	justify-items: left;
+	text-align: left;
+}
+
+.dashboard > .sidebar > .segment > :not(img):not(span):not(i) {
+	text-align: left;
+	justify-items: left;
+	transition: margin-left 0.2s;
+	display: inline-flexbox;
+	cursor: default;
+	width: 100%;
+}
+
+.dashboard > .sidebar > .segment.selected {
+	background-color: var(--dark-color-4);
+}
+
+.dashboard > .sidebar > .segment:not(.selected):hover {
+	background-color: var(--dark-color-3);
+	transition: background-color 0.2s;
+}
+
+.dashboard > .sidebar > .segment:not(.selected):hover > :not(img):not(span):not(i) {
+	margin-left: 0.6rem;
+	transition: margin-left 0.2s;
+}
+
+.grid {
+	display: flex;
+	grid-template-columns: 1fr 1fr;
+	column-gap: 2rem;
+}
+
+.grid > .element {
+	background-color: var(--dark-color-2);
+	min-width: 30em;
+	place-items: center;
+	text-align: center;
+	border-radius: 4%;
+	box-shadow: 0px 0px var(--dark-color-2);
+	transition: box-shadow 0.2s;
+	height: 100%;
+}
+
+.grid > .element:hover {
+	box-shadow: 3px 6px var(--dark-color-3);
+	transition: box-shadow 0.2s;
+}
+
+.grid > .element > .card-title {
+	margin: 0.4em 0em;
+	font-size: 24px;
+	font-family: 'Telex', sans-serif;
+	color: var(--main-color);
+}
+
+.grid > .element > .card-description {
+	color: var(--light-color);
+	margin: 3.5em 3.5em 1.5em 3.5em;
+	font-size: 20px;
+}
+
+img#pfp {
+	background-color: var(--dark-color-4);
+	border-radius: 50%;
+	width: 100%;
 	height: 100%;
 }
 
@@ -83,7 +191,7 @@ input {
 	border-bottom: 1px solid var(--light-color);
 	color: var(--light-color);
 	appearance: none;
-	background: hsla(0, 0, 0, 0);
+	background: rgba(0, 0, 0, 0);
 	padding: 12px;
 	width: 250px;
 	font-size: 14px;
@@ -156,7 +264,7 @@ button {
 }
 button.outline {
 	border: 1px solid var(--main-color);
-	background-color: hsla(0, 0, 0, 0);
+	background-color: rgba(0, 0, 0, 0);
 }
 button.outline:hover {
 	background-color: var(--main-color);
@@ -170,7 +278,7 @@ button.success.outline:hover {
 	transition: background-color 0.1s;
 }
 button.success.outline {
-	background-color: hsla(0, 0, 0, 0);
+	background-color: rgba(0, 0, 0, 0);
 	border: 1px solid var(--success);
 }
 
@@ -181,7 +289,7 @@ button.error.outline:hover {
 	transition: background-color 0.1s;
 }
 button.error.outline {
-	background-color: hsla(0, 0, 0, 0);
+	background-color: rgba(0, 0, 0, 0);
 	border: 1px solid var(--error);
 }
 
@@ -198,4 +306,41 @@ button:disabled {
 	transition: filter 0.2s;
 	filter: grayscale(100%);
 	cursor: not-allowed;
+}
+
+button:hover {
+	cursor: pointer;
+}
+
+/* Badges */
+
+span.badge {
+	display: inline;
+	background-color: var(--main-color);
+	border-radius: 4px;
+	float: right;
+	padding: 0.2em 0.4em;
+	margin-right: 2em;
+}
+
+span.badge.error {
+	background-color: var(--error);
+	color: var(--light-color);
+}
+
+span.badge.success {
+	background-color: var(--success);
+}
+
+span.badge.notice {
+	background-color: var(--notice);
+}
+
+span.badge.warning {
+	background-color: var(--warning);
+}
+
+span.badge.role {
+	margin: -1.3em 0em;
+	position: absolute;
 }

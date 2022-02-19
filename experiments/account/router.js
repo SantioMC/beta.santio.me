@@ -4,7 +4,11 @@ const { resolve } = require('path');
 const { requiresAuth } = require('../../database/database');
 
 router.get('/', requiresAuth('/account/login'), (req, res) => {
-	res.sendFile(resolve(`${__dirname}/pages/account.html`));
+	res.sendFile(resolve(`${__dirname}/pages/account/index.html`));
+});
+
+router.get('/settings', requiresAuth('/account/settings'), (req, res) => {
+	res.sendFile(resolve(`${__dirname}/pages/account/settings.html`));
 });
 
 router.get('/login', (req, res) => {
@@ -13,7 +17,7 @@ router.get('/login', (req, res) => {
 });
 
 router.get('/logout', async (req, res) => {
-	await req.tokenData.delete();
+	if (req.tokenData) await req.tokenData.delete();
 	res.clearCookie('token');
 	res.redirect('/account/login');
 });

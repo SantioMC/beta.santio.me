@@ -20,7 +20,18 @@ const port = process.env.PORT || 3000;
 // Middleware
 app.use(cookieParser(process.env.COOKIE_SECRET));
 app.use(require('express-minify')());
-app.use(helmet({ contentSecurityPolicy: false }));
+app.use(
+	helmet({
+		contentSecurityPolicy: {
+			directives: {
+				scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'"],
+				scriptSrcAttr: ["'self'", "'unsafe-inline'"],
+				imgSrc: ["'self'", '*.gravatar.com']
+			}
+		},
+		crossOriginEmbedderPolicy: false
+	})
+);
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json({ type: ['application/json', 'text/plain'] }));
 app.use(ratelimit(300));

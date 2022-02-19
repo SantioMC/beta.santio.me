@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>santio.me | Account</title>
+	<link rel="stylesheet" href="/assets/css/style.css">
+	<script src="/assets/js/vue.js"></script>
+	<script type="module" src="/assets/js/dashboard.js"></script>
+</head>
+
+<body>
+	<div id="dashboard" class="dashboard clean">
+		<sidebar page="settings" :user="user"></sidebar>
+		<div class="menu">
+			<div class="grid">
+				<div class="element">
+					<div class="card-title">
+						Request Data
+					</div>
+					<div class="card-description">
+						Want a download of what data we have stored in your account? Click the button below to recieve a download.
+						<br><button class="error outline">Request Data</button>
+					</div>
+				</div>
+				<div class="element">
+					<div class="card-title">
+						Sessions
+					</div>
+					<div class="card-description">
+						You currently have <code>{{user.sessionCount}}</code> ongoing sessions. If you wish to delete all existing sessions, click on the button below. This will log you out on all devices.
+						<div class="error">Notice: You will be required to log in again!</div>
+						<br><button class="error outline">Delete all sessions</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+
+</html>

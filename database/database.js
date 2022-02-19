@@ -40,12 +40,10 @@ module.exports.getToken = async (token) => {
 module.exports.requiresAuth = (redirect) => {
 	return async (req, res, next) => {
 		const acc = await module.exports.getAccount(req);
-		console.log(acc);
 		if (req.tokenData == null || acc == null) {
 			if (redirect != null) return res.redirect(redirect);
 			else return res.status(401).send({ error: true, message: 'You are not authenticated!' });
 		}
-		console.log(acc.suspended != '');
 		if (acc.suspended != '' && req.baseUrl != '/account/logout' && !req.baseUrl.startsWith('/api/')) return res.redirect('/suspended');
 		next();
 	};
