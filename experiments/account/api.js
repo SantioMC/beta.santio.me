@@ -71,9 +71,9 @@ router
 		if (isNaN(age)) return res.status(400).send({ error: true, message: 'The age you provided is not a number!' });
 		if (parseInt(age) < 13) return res.status(400).send({ error: true, message: 'You must be 13 or older to register an account!' });
 
-		if (/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/i.test(email)) return res.status(400).send({ error: true, message: 'Please enter a valid email address!' });
-		if (/^[a-z0-9]{3,8}$/.test(tag)) return res.status(400).send({ error: true, message: 'Tags must be between 3 and 8 characters and should contain no capitals!' });
-		if (/^[A-Z0-9]{3,16}$/i.test(tag)) return res.status(400).send({ error: true, message: 'Your username must be between 3 and 16 characters!' });
+		if (!/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/i.test(email)) return res.status(400).send({ error: true, message: 'Please enter a valid email address!' });
+		if (!/^[a-z0-9]{3,8}$/.test(tag)) return res.status(400).send({ error: true, message: 'Tags must be between 3 and 8 characters and should contain no capitals!' });
+		if (!/^[A-Z0-9]{3,16}$/i.test(username)) return res.status(400).send({ error: true, message: 'Your username must be between 3 and 16 characters!' });
 
 		var exists = await Account.findOne({ tag });
 		if (exists) return res.status(400).send({ error: true, message: 'An account already has the provided tag!' });
